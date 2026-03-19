@@ -5,4 +5,4 @@ __pycache__/
 
 # Add tokenize-custom but not any finetuning data
 finetune/*
-!finetune/tokenize-custom.py
+!finetune/tokenize_custom.py
