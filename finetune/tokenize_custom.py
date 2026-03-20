@@ -5,7 +5,7 @@ from glob import glob
 from tqdm import tqdm
 
 from path_utils import get_subset_path
-from tokenization.constants import DatasetType
+from dataloaders.constants import DatasetType
 from anticipation.config import *
 from anticipation.tokenize import tokenize, tokenize_ia
 
