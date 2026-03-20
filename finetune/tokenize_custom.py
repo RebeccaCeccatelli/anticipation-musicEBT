@@ -4,7 +4,8 @@ from multiprocessing import Pool, RLock
 from glob import glob
 from tqdm import tqdm
 
-from tokenization.constants import get_subset_path, DatasetType
+from path_utils import get_subset_path
+from tokenization.constants import DatasetType
 from anticipation.config import *
 from anticipation.tokenize import tokenize, tokenize_ia
 
