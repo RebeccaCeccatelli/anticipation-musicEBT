@@ -3,6 +3,8 @@ Top-level functions for preprocessing data to be used for training.
 """
 
 from tqdm import tqdm
+import wandb
+import os
 
 import numpy as np
 
@@ -105,6 +107,7 @@ def tokenize_ia(datafiles, output, augment_factor, idx=0, debug=False):
 
     with open(output, 'w') as outfile:
         concatenated_tokens = []
+        total = len(datafiles)
         for j, filename in tqdm(list(enumerate(datafiles)), desc=f'#{idx}', position=idx+1, leave=True):
             with open(filename, 'r') as f:
                 _, _, status = maybe_tokenize([int(token) for token in f.read().split()])
@@ -127,6 +130,15 @@ def tokenize_ia(datafiles, output, augment_factor, idx=0, debug=False):
                 concatenated_tokens = concatenated_tokens[CONTEXT_SIZE:]
                 outfile.write(' '.join([str(tok) for tok in seq]) + '\n')
                 seqcount += 1
+            
+            # Log progress (only one worker to avoid collisions)
+            if idx == 0:
+                if j % 10 == 0:  # throttle logging
+                    wandb.log({
+                        "progress": (j + 1) / total,
+                        "files_processed": j + 1,
+                        "total_files": total
+                    })
 
     if debug:
         fmt = 'Processed {} sequences (discarded {} tracks, discarded {} seqs, added {} rest tokens)'
@@ -144,6 +156,8 @@ def tokenize(datafiles, output, augment_factor, idx=0, debug=False):
 
     with open(output, 'w') as outfile:
         concatenated_tokens = []
+
+        total = len(datafiles)
         for j, filename in tqdm(list(enumerate(datafiles)), desc=f'#{idx}', position=idx+1, leave=True):
             with open(filename, 'r') as f:
                 all_events, truncations, status = maybe_tokenize([int(token) for token in f.read().split()])
@@ -211,6 +225,14 @@ def tokenize(datafiles, output, augment_factor, idx=0, debug=False):
 
                     # grab the current augmentation controls if we didn't already
                     z = ANTICIPATE if k % 10 != 0 else AUTOREGRESS
+            
+            if idx == 0:
+                if j % 10 == 0:
+                    wandb.log({
+                        "progress": (j + 1) / total,
+                        "files_processed": j + 1,
+                        "total_files": total
+                    })
 
     if debug:
         fmt = 'Processed {} sequences (discarded {} tracks, discarded {} seqs, added {} rest tokens)'
