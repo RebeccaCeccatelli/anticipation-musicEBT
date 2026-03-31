@@ -10,7 +10,7 @@ import numpy as np
 
 from anticipation import ops
 from anticipation.config import *
-from anticipation.vocab import *
+from anticipation.vocab_selector import *
 from anticipation.convert import compound_to_events, midi_to_interarrival
 
 

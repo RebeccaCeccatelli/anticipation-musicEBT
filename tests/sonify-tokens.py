@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from pathlib import Path
 
-from anticipation.vocab import AUTOREGRESS, ANTICIPATE
+from anticipation.vocab_selector import AUTOREGRESS, ANTICIPATE
 from anticipation.convert import events_to_midi, interarrival_to_midi
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ from anticipation.visuals import visualize
 from anticipation.tokenize import extract_instruments
 from anticipation.convert import midi_to_events, events_to_midi
 from anticipation.config import TIME_RESOLUTION, EVENT_SIZE
-from anticipation.vocab import TIME_OFFSET, NOTE_OFFSET
+from anticipation.vocab_selector import TIME_OFFSET, NOTE_OFFSET
 
 def select_sample(filenames, prompt_length, clip_length, verbose=False):
     while True:

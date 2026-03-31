@@ -12,7 +12,7 @@ from anticipation import ops
 from anticipation.visuals import visualize
 from anticipation.convert import midi_to_interarrival, interarrival_to_midi
 from anticipation.convert import midi_to_events, events_to_midi
-from anticipation.vocab import MIDI_SEPARATOR,MIDI_START_OFFSET,MIDI_END_OFFSET
+from anticipation.vocab_selector import MIDI_SEPARATOR,MIDI_START_OFFSET,MIDI_END_OFFSET
 
 
 def main(args):

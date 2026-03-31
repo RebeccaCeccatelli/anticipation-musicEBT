@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from anticipation.vocab import SEPARATOR
+from anticipation.vocab_selector import SEPARATOR
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='inspect a MIDI dataset')

@@ -7,7 +7,7 @@ from collections import defaultdict
 import mido
 
 from anticipation.config import *
-from anticipation.vocab import *
+from anticipation.vocab_selector import *
 from anticipation.ops import unpad
 
 

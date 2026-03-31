@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from tqdm import tqdm
 
-from anticipation.vocab import *
+from anticipation.vocab_selector import *
 from anticipation.ops import get_instruments
 
 if __name__ == '__main__':

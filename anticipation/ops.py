@@ -5,7 +5,7 @@ Utilities for operating on encoded Midi sequences.
 from collections import defaultdict
 
 from anticipation.config import *
-from anticipation.vocab import *
+from anticipation.vocab_selector import *
 
 
 def print_tokens(tokens):

@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 import anticipation.ops as ops
 from anticipation.config import *
-from anticipation.vocab import *
+from anticipation.vocab_selector import *
 
 def visualize(tokens, output, selected=None):
     #colors = ['white', 'silver', 'red', 'sienna', 'darkorange', 'gold', 'yellow', 'palegreen', 'seagreen', 'cyan',

@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 from anticipation import ops
 from anticipation.config import *
-from anticipation.vocab import *
+from anticipation.vocab_selector import *
 
 
 def safe_logits(logits, idx):
