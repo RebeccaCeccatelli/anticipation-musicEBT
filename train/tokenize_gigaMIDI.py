@@ -28,12 +28,12 @@ def main(args):
     project_formatted = f"Giga-Midi-Tokenization"
     splits_str = args.split if args.split else "all-splits"
     
-    # Build run name: anticipation-vanilla-SPLIT-TIME or anticipation-SPLIT-TIME
+    # Build run name: anticipation-vanilla-tok-TIME or anticipation-tok-TIME
     if vanilla_mode:
-        run_name = f"anticipation-vanilla-{splits_str}-{datetime.now().strftime('%m%d-%H%M')}"
+        run_name = f"anticipation-vanilla-tok-{datetime.now().strftime('%m%d-%H%M')}"
         vocab_mode = "vanilla"
     else:
-        run_name = f"anticipation-{splits_str}-{datetime.now().strftime('%m%d-%H%M')}"
+        run_name = f"anticipation-tok-{datetime.now().strftime('%m%d-%H%M')}"
         vocab_mode = "anticipation"
     
     wandb.init(

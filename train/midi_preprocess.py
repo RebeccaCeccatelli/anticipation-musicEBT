@@ -1,10 +1,13 @@
 import traceback
+import os
 from argparse import ArgumentParser
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 from glob import glob
+from datetime import datetime
 
 from tqdm import tqdm
+import wandb
 
 from anticipation.convert import midi_to_compound
 from anticipation.config import PREPROC_WORKERS, TIME_RESOLUTION
@@ -62,6 +65,26 @@ def main(args):
     filenames = glob(args.dir + '/**/*.mid', recursive=True) \
             + glob(args.dir + '/**/*.midi', recursive=True)
     
+    # Initialize WandB for logging
+    try:
+        wandb.init(
+            project="Giga-Midi-Tokenization",
+            name=f"anticipation-preprocessing-{datetime.now().strftime('%m%d-%H%M')}",
+            settings=wandb.Settings(console="wrap_raw"),
+            config={
+                "total_files": len(filenames),
+                "workers": PREPROC_WORKERS,
+                "add_drum": args.add_drum,
+                "directory": args.dir,
+                "timestamp": datetime.now().isoformat()
+            }
+        )
+        wandb_enabled = True
+    except Exception as e:
+        print(f"⚠️  WandB init failed: {type(e).__name__}: {str(e)}")
+        print("Continuing without WandB tracking...")
+        wandb_enabled = False
+    
     convert_midi_partial = partial(convert_midi, addDrum=args.add_drum)
 
     print(f'Preprocessing {len(filenames)} files with {PREPROC_WORKERS} workers')
@@ -69,7 +92,18 @@ def main(args):
         results = list(tqdm(executor.map(convert_midi_partial, filenames), desc='Preprocess', total=len(filenames)))
 
     discards = round(100*sum(results)/float(len(filenames)),2)
-    print(f'Successfully processed {len(filenames) - sum(results)} files (discarded {discards}%)')
+    successful = len(filenames) - sum(results)
+    print(f'Successfully processed {successful} files (discarded {discards}%)')
+    
+    # Log summary to WandB
+    if wandb_enabled:
+        wandb.log({
+            "total_files": len(filenames),
+            "successful_files": successful,
+            "failed_files": sum(results),
+            "discard_percentage": discards
+        })
+        wandb.finish()
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='prepares a MIDI dataset')
