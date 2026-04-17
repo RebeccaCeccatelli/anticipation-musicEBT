@@ -12,6 +12,7 @@ from anticipation import ops
 from anticipation.config import *
 from anticipation.vocab_selector import *
 from anticipation.convert import compound_to_events, midi_to_interarrival
+from .checkpoint_manager import save_checkpoint
 
 
 def extract_spans(all_events, rate):
@@ -97,7 +98,7 @@ def maybe_tokenize(compound_tokens):
     return events, truncations, 0
 
 
-def tokenize_ia(datafiles, output, augment_factor, idx=0, debug=False):
+def tokenize_ia(datafiles, output, augment_factor, idx=0, start_idx=0, split_name=None, token_dir=None, debug=False):
     assert augment_factor == 1 # can't augment interarrival-tokenized data
 
     all_truncations = 0
@@ -108,7 +109,11 @@ def tokenize_ia(datafiles, output, augment_factor, idx=0, debug=False):
     with open(output, 'w') as outfile:
         concatenated_tokens = []
         total = len(datafiles)
+        checkpoint_interval = max(1, total // 20)  # Save checkpoint every 5%
+        
         for j, filename in tqdm(list(enumerate(datafiles)), desc=f'#{idx}', position=idx+1, leave=True):
+            actual_file_index = start_idx + j
+            
             with open(filename, 'r') as f:
                 _, _, status = maybe_tokenize([int(token) for token in f.read().split()])
 
@@ -131,6 +136,10 @@ def tokenize_ia(datafiles, output, augment_factor, idx=0, debug=False):
                 outfile.write(' '.join([str(tok) for tok in seq]) + '\n')
                 seqcount += 1
             
+            # Save checkpoint periodically
+            if split_name and token_dir and (j + 1) % checkpoint_interval == 0:
+                save_checkpoint(token_dir, split_name, actual_file_index + 1, total + start_idx, j + 1)
+            
             # Log progress (only one worker to avoid collisions)
             if idx == 0:
                 if j % 10 == 0:  # throttle logging
@@ -147,7 +156,7 @@ def tokenize_ia(datafiles, output, augment_factor, idx=0, debug=False):
     return (seqcount, rest_count, stats[0], stats[1], stats[2], stats[3], all_truncations)
 
 
-def tokenize(datafiles, output, augment_factor, idx=0, debug=False):
+def tokenize(datafiles, output, augment_factor, idx=0, start_idx=0, split_name=None, token_dir=None, debug=False):
     tokens = []
     all_truncations = 0
     seqcount = rest_count = 0
@@ -158,7 +167,11 @@ def tokenize(datafiles, output, augment_factor, idx=0, debug=False):
         concatenated_tokens = []
 
         total = len(datafiles)
+        checkpoint_interval = max(1, total // 20)  # Save checkpoint every 5%
+        
         for j, filename in tqdm(list(enumerate(datafiles)), desc=f'#{idx}', position=idx+1, leave=True):
+            actual_file_index = start_idx + j
+            
             with open(filename, 'r') as f:
                 all_events, truncations, status = maybe_tokenize([int(token) for token in f.read().split()])
 
@@ -225,6 +238,10 @@ def tokenize(datafiles, output, augment_factor, idx=0, debug=False):
 
                     # grab the current augmentation controls if we didn't already
                     z = ANTICIPATE if k % 10 != 0 else AUTOREGRESS
+            
+            # Save checkpoint periodically
+            if split_name and token_dir and (j + 1) % checkpoint_interval == 0:
+                save_checkpoint(token_dir, split_name, actual_file_index + 1, total + start_idx, j + 1)
             
             if idx == 0:
                 if j % 10 == 0:
