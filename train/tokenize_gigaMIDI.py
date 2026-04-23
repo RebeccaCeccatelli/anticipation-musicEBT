@@ -9,8 +9,6 @@ from datetime import datetime
 import wandb
 from tqdm import tqdm
 
-from path_utils import get_dataset_path
-from dataloaders.constants import DatasetType
 from anticipation.config import *
 from anticipation.tokenize import tokenize, tokenize_ia
 from anticipation.checkpoint_manager import save_checkpoint, load_checkpoint, delete_checkpoint
@@ -21,6 +19,12 @@ def log_print(*args, **kwargs):
     sys.stdout.flush()
 
 def main(args):
+    # Get root directory from args (must be provided by caller)
+    if not hasattr(args, 'root_dir') or not args.root_dir:
+        raise ValueError("root_dir must be provided as an argument")
+    
+    root_dir = args.root_dir
+    
     # Initialize wandb for logging with proper settings
     dataset_name = "giga-midi"
     vanilla_mode = args.vanilla if hasattr(args, 'vanilla') else False
@@ -28,12 +32,12 @@ def main(args):
     project_formatted = f"Giga-Midi-Tokenization"
     splits_str = args.split if args.split else "all-splits"
     
-    # Build run name: anticipation-vanilla-tok-TIME or anticipation-tok-TIME
+    # Build run name: anticipation-vanilla-tok-{split}-TIME or anticipation-tok-{split}-TIME
     if vanilla_mode:
-        run_name = f"anticipation-vanilla-tok-{datetime.now().strftime('%m%d-%H%M')}"
+        run_name = f"anticipation-vanilla-tok-{splits_str}-{datetime.now().strftime('%m%d-%H%M')}"
         vocab_mode = "vanilla"
     else:
-        run_name = f"anticipation-tok-{datetime.now().strftime('%m%d-%H%M')}"
+        run_name = f"anticipation-tok-{splits_str}-{datetime.now().strftime('%m%d-%H%M')}"
         vocab_mode = "anticipation"
     
     wandb.init(
@@ -50,8 +54,6 @@ def main(args):
         }
     )
     
-    # 1. Setup Paths
-    root_dir = get_dataset_path("giga-midi")
     midi_dir = os.path.join(root_dir, "midi")
     
     # Use separate folders for vanilla vs non-vanilla anticipation
@@ -119,13 +121,13 @@ def main(args):
             # Slice file list to continue from checkpoint
             files_to_process = f_list[start_idx:]
             log_print(f"📦 Split '{split_name}' added to queue ({len(files_to_process)} files remaining).")
-            tasks.append((files_to_process, out_path, aug, i, start_idx, split_name, True))
+            tasks.append((files_to_process, out_path, aug, i, start_idx, split_name, token_dir))
         elif not f_list:
             log_print(f"❓ Split '{split_name}' has no input files. Skipping.")
         else:
             # Fresh start
             log_print(f"📦 Split '{split_name}' added to queue ({len(f_list)} files).")
-            tasks.append((f_list, out_path, aug, i, 0, split_name, False))
+            tasks.append((f_list, out_path, aug, i, 0, split_name, token_dir))
 
     if not tasks:
         log_print("✨ All splits are already up to date!")

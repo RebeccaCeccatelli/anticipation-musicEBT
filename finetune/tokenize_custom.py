@@ -4,20 +4,17 @@ from multiprocessing import Pool, RLock
 from glob import glob
 from tqdm import tqdm
 
-from path_utils import get_subset_path
-from dataloaders.constants import DatasetType
 from anticipation.config import *
 from anticipation.tokenize import tokenize, tokenize_ia
 
 
 def main(args):
-    # Determine paths based on whether called by Master or CLI
-    if hasattr(args, 'midi_dir') and args.midi_dir:
-        midi_dir = args.midi_dir
-        token_dir = args.token_dir
-    else:
-        midi_dir = get_subset_path(args.dataset_name, "midi")
-        token_dir = get_subset_path(args.dataset_name, "tokens")
+    # Paths must be provided - anticipation module is independent
+    midi_dir = args.midi_dir
+    token_dir = args.token_dir
+    
+    if not midi_dir or not token_dir:
+        raise ValueError("midi_dir and token_dir are required parameters")
 
     print(f'Reading Preprocessed files from: {midi_dir}')
     print(f'Saving Final Tokens to: {token_dir}')
@@ -43,9 +40,8 @@ def main(args):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--dataset_name', type=str, default="jordan-progrock-dataset")
+    parser.add_argument('--midi_dir', type=str, required=True, help="Path to MIDI directory with Train/Test/Validation subfolders")
+    parser.add_argument('--token_dir', type=str, required=True, help="Path to output token directory")
     parser.add_argument('-k', '--augment', type=int, default=1)
     parser.add_argument('-i', '--interarrival', action='store_true')
-    # These are populated by the Master script, or remain None for CLI
-    parser.add_argument('--midi_dir', type=str, default=None)
-    parser.add_argument('--token_dir', type=str, default=None)
     main(parser.parse_args())
