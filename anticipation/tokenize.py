@@ -106,7 +106,8 @@ def tokenize_ia(datafiles, output, augment_factor, idx=0, start_idx=0, split_nam
     stats = 4*[0] # (short, long, too many instruments, inexpressible)
     np.random.seed(0)
 
-    with open(output, 'w') as outfile:
+    open_mode = 'a' if start_idx > 0 else 'w'
+    with open(output, open_mode) as outfile:
         concatenated_tokens = []
         total = len(datafiles)
         checkpoint_interval = max(1, total // 20)  # Save checkpoint every 5%
@@ -163,7 +164,8 @@ def tokenize(datafiles, output, augment_factor, idx=0, start_idx=0, split_name=N
     stats = 4*[0] # (short, long, too many instruments, inexpressible)
     np.random.seed(0)
 
-    with open(output, 'w') as outfile:
+    open_mode = 'a' if start_idx > 0 else 'w'
+    with open(output, open_mode) as outfile:
         concatenated_tokens = []
 
         total = len(datafiles)

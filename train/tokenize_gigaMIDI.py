@@ -158,12 +158,19 @@ def main(args):
     wandb.finish()
 
 if __name__ == '__main__':
+    import os as _os
+    _storage = _os.getenv('CUSTOM_STORAGE_PATH')
+    _default_root = _os.path.join(_storage, 'giga-midi') if _storage else None
+
     parser = ArgumentParser(description='Tokenizes GigaMIDI after preprocessing (with checkpoint recovery)')
-    parser.add_argument('-k', '--augment', type=int, default=1)
+    parser.add_argument('--root_dir', type=str, default=_default_root, required=_default_root is None,
+                       help='Root directory of the GigaMIDI dataset. Defaults to $CUSTOM_STORAGE_PATH/giga-midi if set.')
+    parser.add_argument('-k', '--augment', type=int, default=1,
+                       help='Augmentation factor: 1 for plain AR, 10 for AMT-style with control tokens')
     parser.add_argument('-i', '--interarrival', action='store_true')
     parser.add_argument('--vanilla', action='store_true',
                        help='Use vanilla anticipation tokenizer (no control block)')
-    parser.add_argument('--split', type=str, default=None, 
+    parser.add_argument('--split', type=str, default=None,
                        choices=['train', 'test', 'validation'],
                        help='Process only this split (default: process all splits)')
     parser.add_argument('--resume', action='store_true',
