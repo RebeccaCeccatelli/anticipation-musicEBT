@@ -91,7 +91,7 @@ def main(args):
 
     # 4. Filter Tasks (Skip Logic with Checkpoint Support)
     all_outputs = [os.path.join(token_dir, f'tokenized-events-{s}.txt') for s in split_names]
-    all_augments = [args.augment if s == 'train' else 1 for s in split_names]
+    all_augments = [args.augment for s in split_names]
     
     tasks = []
     for i, (f_list, out_path, aug) in enumerate(zip(all_files, all_outputs, all_augments)):
