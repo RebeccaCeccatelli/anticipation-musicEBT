@@ -2,6 +2,8 @@
 
 This repository is the anticipation tokenizer used by [music-EBT](https://github.com/RebeccaCeccatelli/music_EBT) (TONIC), where it is a git submodule at `data/mus/symbolic/tokenization/anticipation`. We use it to tokenize GigaMIDI into arrival-time anticipation sequences for training Energy-Based Transformers and AR baselines.
 
+**Main contribution:** this fork extends the anticipation library to the large-scale [GigaMIDI](https://huggingface.co/datasets/Metacreation/GigaMIDI) dataset with an end-to-end tokenization pipeline that can resume from checkpoints after cluster time-outs, and it adds an optional "vanilla" vocabulary without anticipation controls.
+
 ## Fork lineage
 
 1. **[jthickstun/anticipation](https://github.com/jthickstun/anticipation)** is the original implementation of the [Anticipatory Music Transformer](https://arxiv.org/abs/2306.08620) by Thickstun, Hall, Donahue and Liang. Its README is kept below.
