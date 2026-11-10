@@ -1,6 +1,6 @@
 # Anticipatory Music Transformer (music-EBT fork)
 
-**Main contribution:** this fork extends the anticipation library to the large-scale [GigaMIDI](https://huggingface.co/datasets/Metacreation/GigaMIDI) dataset with an end-to-end tokenization pipeline that can resume from checkpoints after cluster time-outs, and it adds an optional "vanilla" vocabulary without anticipation controls.
+**Main contribution:** this fork extends the [anticipation](https://github.com/jthickstun/anticipation) library (Thickstun et al., [Anticipatory Music Transformer](https://arxiv.org/abs/2306.08620)) to the large-scale [GigaMIDI](https://huggingface.co/datasets/Metacreation/GigaMIDI) dataset with an end-to-end tokenization pipeline that can resume from checkpoints after cluster time-outs, and it adds an optional "vanilla" vocabulary without anticipation controls.
 
 It is used as the anticipation tokenizer of [music-EBT](https://github.com/RebeccaCeccatelli/music_EBT) (Tonic), where it is a git submodule at `data/mus/symbolic/tokenization/anticipation`. There it turns GigaMIDI into arrival-time anticipation sequences for training Energy-Based Transformers and AR baselines.
 
