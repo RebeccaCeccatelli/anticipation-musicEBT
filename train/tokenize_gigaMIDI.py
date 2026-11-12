@@ -49,7 +49,7 @@ def main(args):
             "pipeline": vocab_mode,
             "splits": args.split if args.split else ["train", "test", "validation"],
             "augment": args.augment,
-            "interarrival": True,  # GigaMIDI always uses interarrival
+            "interarrival": args.interarrival,  # arrival-time unless -i is passed
             "use_vanilla": vanilla_mode
         }
     )
