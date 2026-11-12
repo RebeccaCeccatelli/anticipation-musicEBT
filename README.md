@@ -30,7 +30,7 @@ It is used as the anticipation tokenizer of [music-EBT](https://github.com/Rebec
 - Note: `--vanilla` in `tokenize_gigaMIDI.py` only changes the output folder and the W&B run name. You must also export `ANTICIPATION_VANILLA=true` to get the vanilla vocabulary.
 
 ### Experiment tracking
-- [Weights & Biases](https://wandb.ai) progress logging (project `Giga-Midi-Tokenization`) in `train/midi_preprocess.py`, `train/tokenize_gigaMIDI.py` and `anticipation/tokenize.py`. Only worker 0 logs, throttled to every 10 files. If W&B fails to start, preprocessing carries on without it.
+- [Weights & Biases](https://wandb.ai) progress logging (project `Giga-Midi-Tokenization`) in `train/midi_preprocess.py`, `train/tokenize_gigaMIDI.py` and `anticipation/tokenize.py`. Only worker 0 logs, throttled to every 10 files. W&B is optional: if it cannot start (no account or no network), preprocessing and tokenization carry on without it. To turn it off explicitly, set `WANDB_MODE=disabled`.
 
 ### Packaging and independence from music-EBT
 - Added `__init__.py` files so the repository can be imported as a package from music-EBT.

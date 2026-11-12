@@ -40,19 +40,25 @@ def main(args):
         run_name = f"anticipation-tok-{splits_str}-{datetime.now().strftime('%m%d-%H%M')}"
         vocab_mode = "anticipation"
     
-    wandb.init(
-        project=project_formatted,
-        name=run_name,
-        settings=wandb.Settings(console="wrap_raw"),
-        config={
-            "dataset": dataset_name,
-            "pipeline": vocab_mode,
-            "splits": args.split if args.split else ["train", "test", "validation"],
-            "augment": args.augment,
-            "interarrival": args.interarrival,  # arrival-time unless -i is passed
-            "use_vanilla": vanilla_mode
-        }
-    )
+    # W&B is optional: if it cannot start (no account, no network), run with
+    # a disabled run so that every wandb.log call becomes a no-op.
+    try:
+        wandb.init(
+            project=project_formatted,
+            name=run_name,
+            settings=wandb.Settings(console="wrap_raw"),
+            config={
+                "dataset": dataset_name,
+                "pipeline": vocab_mode,
+                "splits": args.split if args.split else ["train", "test", "validation"],
+                "augment": args.augment,
+                "interarrival": args.interarrival,  # arrival-time unless -i is passed
+                "use_vanilla": vanilla_mode
+            }
+        )
+    except Exception as e:
+        log_print(f"⚠️  WandB init failed ({type(e).__name__}: {e}); continuing without it.")
+        wandb.init(mode="disabled")
     
     midi_dir = os.path.join(root_dir, "midi")
     
