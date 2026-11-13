@@ -15,7 +15,7 @@ It is used as the anticipation tokenizer of [music-EBT](https://github.com/Rebec
 ### GigaMIDI tokenization pipeline
 - **`train/tokenize_gigaMIDI.py`** tokenizes a preprocessed GigaMIDI tree (`<root>/midi/{train,test,validation}`) into `<root>/tokens/anticipation[-vanilla]/`. Options:
   - `--root_dir` (defaults to `$CUSTOM_STORAGE_PATH/giga-midi`)
-  - `-k/--augment` (1 = plain AR, 10 = AMT-style anticipation with control tokens). Since `efcb168` this applies to **all splits**, not just train.
+  - `-k/--augment` (1 = plain AR, 10 = AMT-style anticipation with control tokens). Since `4183189` this applies to **all splits**, not just train.
   - `-i/--interarrival`, `--split` to process one split, `--resume` to continue from a checkpoint, and `--vanilla`
 - Input files are **sorted** before processing, so the file order stays the same when a job is resumed.
 
